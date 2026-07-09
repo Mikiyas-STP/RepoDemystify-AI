@@ -1,0 +1,64 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: repodemystify-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: repodemystify
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+  ollama:
+    image: ollama/ollama
+    container_name: repodemystify-ollama
+    restart: unless-stopped
+
+    ports:
+      - "11434:11434"
+
+    volumes:
+      - ollama_data:/root/.ollama
+
+
+volumes:
+
+  postgres_data:
+
+  ollama_data:
+
+
+
+#   RepoDemystify
+
+#         |
+
+#         |
+
+# Docker Compose
+
+#         |
+
+# ----------------------
+
+# PostgreSQL
+
+# Ollama
+
+# Spring Boot
+
+#         ↓
+
+# PostgreSQL
+
+#         ↓
+
+# Ollama
