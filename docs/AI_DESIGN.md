@@ -1,402 +1,468 @@
-# RepoDemystify AI — API Design
+# RepoDemystify AI — AI Architecture Design
 
 ## Overview
 
-The RepoDemystify AI backend exposes REST APIs that allow the frontend and external clients to interact with repository analysis, AI assistance, and user functionality.
+The AI system is the intelligence layer of RepoDemystify AI.
 
-The API design follows REST principles:
+Its purpose is not to replace developers, but to help them understand software systems faster.
 
-- Clear resource-based URLs
-- HTTP methods
-- JSON communication
-- Stateless requests
+The AI layer provides:
 
----
-
-# API Base URL
-
-Development:
-
-```
-http://localhost:8080/api
-```
-
-Future production:
-
-```
-https://api.repodemystify.ai/api
-```
+- Repository explanations
+- Code understanding
+- Architecture descriptions
+- Developer guidance
+- Contribution recommendations
 
 ---
 
-# Authentication
+# AI Strategy
 
-Future versions will support:
+RepoDemystify AI follows an AI Application Engineering approach.
 
-- User registration
-- Login
-- JWT authentication
-- OAuth with GitHub
+The project does not train a new LLM.
+
+Instead, it builds a specialised application around existing models.
+
+Architecture:
+
+```
+Repository Knowledge
+
+        +
+
+Large Language Model
+
+        +
+
+Application Logic
+
+        =
+
+AI Developer Assistant
+```
+
+---
+
+# Why Use Existing LLMs?
+
+Training a foundation model requires:
+
+- enormous datasets
+- expensive infrastructure
+- specialised research teams
+
+For this project, the valuable engineering challenge is:
+
+- integrating AI
+- designing context retrieval
+- building useful workflows
+
+---
+
+# AI Pipeline Overview
+
+```
+Repository
+
+    ↓
+
+Repository Analysis
+
+    ↓
+
+Knowledge Extraction
+
+    ↓
+
+Embeddings Generation
+
+    ↓
+
+Vector Storage
+
+    ↓
+
+Context Retrieval
+
+    ↓
+
+Prompt Construction
+
+    ↓
+
+LLM
+
+    ↓
+
+Developer Response
+```
+
+---
+
+# 1. Repository Analysis Layer
+
+## Purpose
+
+Convert raw code into structured information.
+
+The system analyses:
+
+- files
+- directories
+- dependencies
+- configuration
+- documentation
+
+---
+
+Example:
+
+Input:
+
+```
+Spring Boot repository
+```
+
+Output:
+
+```
+Framework:
+Spring Boot
+
+Language:
+Java
+
+Database:
+PostgreSQL
+
+Architecture:
+MVC
+```
+
+---
+
+# 2. Knowledge Extraction
+
+The system creates meaningful information.
+
+Examples:
+
+## Component Understanding
+
+```
+UserController
+
+handles
+
+User API requests
+```
+
+---
+
+## Dependency Understanding
+
+```
+Controller
+
+uses
+
+UserService
+
+uses
+
+UserRepository
+```
+
+---
+
+# 3. Embeddings
+
+## Purpose
+
+Convert text/code information into numerical representations.
 
 Example:
 
 ```
-Authorization: Bearer <token>
+Authentication service code
+
+        ↓
+
+Embedding vector
+
+        ↓
+
+Searchable meaning
 ```
 
 ---
 
-# Repository API
-
-## Create Repository Analysis
-
-### Endpoint
-
-```
-POST /repositories
-```
+# 4. Vector Database
 
 Purpose:
 
-Submit a repository for analysis.
+Store and search repository knowledge.
+
+Possible technologies:
+
+- pgvector
+- Chroma
+- Weaviate
 
 ---
-
-## Request
-
-```json
-{
-  "repositoryUrl": "https://github.com/example/project"
-}
-```
-
----
-
-## Response
-
-```json
-{
-  "id": 1,
-  "status": "ANALYSING",
-  "repositoryUrl": "https://github.com/example/project"
-}
-```
-
----
-
-# Get Repository Information
-
-## Endpoint
-
-```
-GET /repositories/{id}
-```
-
-Purpose:
-
-Retrieve repository analysis.
-
----
-
-## Response
-
-```json
-{
-  "id": 1,
-  "name": "example-project",
-  "language": "Java",
-  "framework": "Spring Boot",
-  "status": "COMPLETED"
-}
-```
-
----
-
-# Repository Structure API
-
-## Endpoint
-
-```
-GET /repositories/{id}/structure
-```
-
-Purpose:
-
-Retrieve analysed file structure.
-
----
-
-Response:
-
-```json
-{
-  "directories": [
-    "src/main/java",
-    "src/test/java"
-  ],
-  "importantFiles": [
-    "pom.xml",
-    "application.properties"
-  ]
-}
-```
-
----
-
-# Architecture API
-
-## Endpoint
-
-```
-GET /repositories/{id}/architecture
-```
-
-Purpose:
-
-Return architecture analysis.
-
----
-
-Response:
-
-```json
-{
-  "layers": [
-    {
-      "name": "Controller",
-      "description": "Handles HTTP requests"
-    },
-    {
-      "name": "Service",
-      "description": "Contains business logic"
-    }
-  ]
-}
-```
-
----
-
-# AI Assistant API
-
-## Ask Repository Question
-
-### Endpoint
-
-```
-POST /repositories/{id}/chat
-```
-
-Purpose:
-
-Ask questions about a repository.
-
----
-
-Request:
-
-```json
-{
-  "question": "How does authentication work?"
-}
-```
-
----
-
-Response:
-
-```json
-{
-  "answer": "Authentication is handled through Spring Security configuration..."
-}
-```
-
----
-
-# Contribution Guidance API
-
-## Generate Contributor Path
-
-Endpoint:
-
-```
-POST /repositories/{id}/contribution-guide
-```
-
-Purpose:
-
-Generate a learning path for contributors.
-
----
-
-Response:
-
-```json
-{
-  "recommendations": [
-    {
-      "title": "Understand authentication module",
-      "difficulty": "Beginner"
-    },
-    {
-      "title": "Improve documentation",
-      "difficulty": "Easy"
-    }
-  ]
-}
-```
-
----
-
-# Analysis Status API
-
-## Endpoint
-
-```
-GET /repositories/{id}/status
-```
-
-Purpose:
-
-Check analysis progress.
-
----
-
-Response:
-
-```json
-{
-  "status": "PROCESSING",
-  "progress": 65
-}
-```
-
----
-
-# User API
-
-## Register User
-
-```
-POST /users/register
-```
-
----
-
-Request:
-
-```json
-{
-  "username": "developer",
-  "email": "user@example.com",
-  "password": "password"
-}
-```
-
----
-
-# Health Check API
-
-Endpoint:
-
-```
-GET /health
-```
-
-Response:
-
-```json
-{
-  "status": "UP"
-}
-```
-
----
-
-# Error Handling
-
-All errors follow a standard format.
 
 Example:
 
-```json
-{
-  "timestamp": "2026-01-01T12:00:00",
-  "status": 404,
-  "message": "Repository not found"
-}
+Question:
+
+```
+Where is authentication implemented?
+```
+
+The system finds:
+
+```
+SecurityConfig.java
+
+UserDetailsService.java
+
+AuthController.java
 ```
 
 ---
 
-# API Versioning
+# 5. Retrieval Augmented Generation (RAG)
 
-Future versions will use:
+RAG is the core AI technique.
+
+Instead of asking:
 
 ```
-/api/v1/
+LLM:
+Answer this question.
 ```
+
+We ask:
+
+```
+LLM:
+
+Here is relevant repository information.
+
+Answer using this context.
+```
+
+---
+
+# RAG Flow
+
+```
+User Question
+
+        ↓
+
+Search Repository Knowledge
+
+        ↓
+
+Retrieve Relevant Code
+
+        ↓
+
+Create Prompt
+
+        ↓
+
+LLM Response
+```
+
+---
+
+# 6. LLM Integration
+
+Initial approach:
+
+```
+Spring AI
+
+↓
+
+Ollama
+
+↓
+
+Local Model
+```
+
+---
+
+Possible models:
+
+- Llama
+- Mistral
+- Qwen
+
+---
+
+Future providers:
+
+- OpenAI
+- Anthropic
+- Google Gemini
+- Azure OpenAI
+
+---
+
+# AI Provider Architecture
+
+The application should depend on an interface.
 
 Example:
 
 ```
-/api/v1/repositories
+AIService
+
+     |
+
+     |
+
+---------------------
+
+|        |           |
+
+Ollama   OpenAI   Gemini
 ```
 
-This allows future changes without breaking clients.
+This prevents vendor lock-in.
 
 ---
 
-# API Design Principles
+# Prompt Engineering
 
-## Consistency
+The system will use specialised prompts.
 
-All endpoints follow predictable patterns.
+Example:
 
----
+```
+You are a senior software engineer.
 
-## Security
+Explain this repository to a junior developer.
 
-Sensitive operations require authentication.
-
----
-
-## Scalability
-
-Long-running operations such as repository analysis will move to asynchronous processing.
+Focus on architecture,
+important files,
+and contribution opportunities.
+```
 
 ---
 
-# Future API Expansion
+# AI Features
+
+## Repository Explanation
+
+Generate:
+
+- purpose
+- architecture
+- technologies
+
+---
+
+## Code Explanation
+
+Explain:
+
+- classes
+- functions
+- relationships
+
+---
+
+## Contribution Guidance
+
+Suggest:
+
+- beginner tasks
+- learning paths
+- relevant files
+
+---
+
+# AI Quality Evaluation
+
+AI responses should be evaluated.
+
+Metrics:
+
+## Accuracy
+
+Is the explanation correct?
+
+---
+
+## Relevance
+
+Does it answer the question?
+
+---
+
+## Context Usage
+
+Did it use repository information?
+
+---
+
+# AI Safety Considerations
+
+The system should:
+
+- avoid exposing secrets
+- protect private repositories
+- respect permissions
+- clearly communicate uncertainty
+
+---
+
+# Future AI Improvements
 
 Possible additions:
 
-## Webhooks
+## Agent Workflows
 
-For GitHub repository updates.
+AI agents that:
 
----
-
-## Real-time Analysis
-
-Using:
-
-- WebSockets
-- Server Sent Events
+- explore repositories
+- create documentation
+- suggest issues
 
 ---
 
-## External Integrations
+## Code Graph Understanding
 
-Future support:
+Build relationships between:
 
-- GitHub Apps
-- GitLab
-- Bitbucket
+- classes
+- functions
+- modules
 
 ---
 
-# Summary
+## Personalised Learning Paths
 
-The API layer provides the bridge between developers, repositories, and AI intelligence.
+Adapt explanations based on developer experience.
 
-It is designed to support the growth of RepoDemystify AI from a simple analysis tool into a complete developer onboarding platform.
+---
+
+# AI Philosophy
+
+RepoDemystify AI focuses on:
+
+```
+Understanding before changing.
+
+Knowledge before automation.
+
+Assistance before replacement.
+```
+
+The goal is to help developers become better engineers.
